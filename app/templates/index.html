@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+</head>
+<body>
+    <h1>¡Bienvenido al sistema de Renta de Sprinter!</h1>
+
+    <h2>Camionetas Sprinter Disponibles</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Modelo</th>
+                <th>Placas</th>
+                <th>Disponible</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for sprinter in sprinters %}
+            <tr>
+                <td>{{ sprinter.id_sprinter }}</td>
+                <td>{{ sprinter.modelo }}</td>
+                <td>{{ sprinter.placas }}</td>
+                <td>{{ sprinter.disponible }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+
+    <h2>Clientes</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nombre</th>
+                <th>Teléfono</th>
+                <th>Correo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for cliente in clientes %}
+            <tr>
+                <td>{{ cliente.id_cliente }}</td>
+                <td>{{ cliente.nombre }}</td>
+                <td>{{ cliente.telefono }}</td>
+                <td>{{ cliente.correo }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <br>
+
+    <h2>Rentas</h2>
+    <table border="1">
+        <thead>
+            <tr>
+                <th>ID Renta</th>
+                <th>Cliente</th>
+                <th>Sprinter</th>
+                <th>Fecha Inicio</th>
+                <th>Fecha Fin</th>
+                <th>Costo</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for renta in rentas %}
+            <tr>
+                <td>{{ renta.id_renta }}</td>
+                <td>{{ renta.cliente.nombre }}</td>
+                <td>{{ renta.sprinter.placas }}</td>
+                <td>{{ renta.fecha_inicio }}</td>
+                <td>{{ renta.fecha_fin }}</td>
+                <td>{{ renta.costo }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</body>
+</html>
