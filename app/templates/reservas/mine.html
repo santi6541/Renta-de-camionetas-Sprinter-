@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Mis reservas · Renta Sprinter{% endblock %}
+{% block content %}
+<h1>Mis reservas</h1>
+<div class="table-wrap"><table>
+  <thead><tr><th>Folio</th><th>Cliente</th><th>Unidad</th><th>Chofer</th><th>Salida</th><th>Regreso</th><th>Ruta</th><th>Estado</th><th>Total</th></tr></thead>
+  <tbody>{% for reserva in reservas %}
+    <tr><td>{{ reserva.folio }}</td><td>{{ reserva.cliente.nombre }}</td><td>{{ reserva.unidad.placas }}</td><td>{{ reserva.chofer.nombre }} {{ reserva.chofer.apellidos }}</td><td>{{ reserva.fecha_salida.strftime('%d/%m/%Y %H:%M') }}</td><td>{{ reserva.fecha_regreso.strftime('%d/%m/%Y %H:%M') }}</td><td>{{ reserva.origen }} → {{ reserva.destino }}</td><td>{{ reserva.estatus|replace('_', ' ')|title }}</td><td>${{ '%.2f'|format(reserva.precio_total) }}</td></tr>
+  {% else %}<tr><td colspan="9">No tienes reservas registradas.</td></tr>{% endfor %}</tbody>
+</table></div>
+{% endblock %}

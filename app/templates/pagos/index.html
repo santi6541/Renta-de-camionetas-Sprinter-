@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Pagos · Renta Sprinter{% endblock %}
+{% block content %}
+<div class="actions"><h1>Pagos</h1><a class="button" href="{{ url_for('pagos.create') }}">Registrar pago</a></div>
+<div class="table-wrap"><table>
+  <thead><tr><th>Fecha</th><th>Reserva</th><th>Cliente</th><th>Monto</th><th>Método</th><th>Estado</th><th>Referencia</th><th>Acciones</th></tr></thead>
+  <tbody>{% for pago in pagos %}
+    <tr><td>{{ pago.fecha_pago.strftime('%d/%m/%Y %H:%M') }}</td><td>{{ pago.reserva.folio }}</td><td>{{ pago.reserva.cliente.nombre }}</td><td>${{ '%.2f'|format(pago.monto) }}</td><td>{{ pago.metodo_pago|replace('_', ' ')|title }}</td><td>{{ pago.estatus|title }}</td><td>{{ pago.referencia or '—' }}</td>
+      <td>{% if pago.estatus != 'cancelado' %}<form method="post" action="{{ url_for('pagos.change_status', pago_id=pago.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><select name="estatus"><option value="pendiente" {{ 'selected' if pago.estatus == 'pendiente' }}>Pendiente</option><option value="pagado" {{ 'selected' if pago.estatus == 'pagado' }}>Pagado</option><option value="cancelado">Cancelar</option></select><button class="secondary" type="submit">Guardar</button></form>{% else %}—{% endif %}</td>
+    </tr>
+  {% else %}<tr><td colspan="8">No hay pagos registrados.</td></tr>{% endfor %}</tbody>
+</table></div>
+{% endblock %}

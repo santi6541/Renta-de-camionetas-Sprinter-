@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Renta Sprinter{% endblock %}</title>
+  <style>
+    :root { color-scheme: light; font: 16px/1.5 system-ui, sans-serif; color: #17212b; background: #f4f6f8; }
+    * { box-sizing: border-box; }
+    body { margin: 0; }
+    header { background: #123d4a; color: white; padding: 1rem max(1rem, calc((100% - 1180px)/2)); display: flex; gap: 1rem; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    header a { color: white; text-decoration: none; }
+    nav { display: flex; flex-wrap: wrap; gap: .8rem; align-items: center; }
+    main { max-width: 1180px; margin: 2rem auto; padding: 0 1rem; }
+    h1 { margin-top: 0; }
+    a { color: #086b7b; }
+    .card, .panel { background: white; border: 1px solid #d8e0e5; border-radius: .6rem; padding: 1rem; margin-bottom: 1rem; }
+    .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(175px, 1fr)); gap: 1rem; }
+    .metric { font-size: 1.7rem; font-weight: 700; }
+    .actions { display: flex; gap: .5rem; align-items: center; flex-wrap: wrap; }
+    .button, button { border: 0; border-radius: .35rem; background: #087789; color: white; padding: .55rem .85rem; cursor: pointer; text-decoration: none; font: inherit; }
+    .button.secondary, button.secondary { background: #52636d; }
+    .button.danger, button.danger { background: #a83838; }
+    button.link { padding: .25rem .45rem; }
+    table { width: 100%; border-collapse: collapse; background: white; }
+    th, td { border-bottom: 1px solid #e2e8ec; text-align: left; padding: .65rem; vertical-align: top; }
+    th { background: #eaf0f3; }
+    .table-wrap { overflow-x: auto; margin: 1rem 0; }
+    label { display: block; font-weight: 600; margin: .75rem 0 .25rem; }
+    input, select, textarea { width: 100%; padding: .6rem; border: 1px solid #aab8c0; border-radius: .35rem; font: inherit; }
+    textarea { min-height: 5rem; }
+    .form-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 0 1rem; }
+    .flash { border-radius: .35rem; padding: .7rem 1rem; margin: .5rem 0; background: #e8f1f5; }
+    .flash.success { background: #e0f3e7; }
+    .flash.danger { background: #f9e4e2; }
+    .flash.warning { background: #fff2d5; }
+    .muted { color: #586871; }
+    .inline { display: inline; }
+    .login { max-width: 440px; margin: 5vh auto; }
+  </style>
+</head>
+<body>
+  {% if current_user.is_authenticated %}
+  <header>
+    <a href="{{ url_for('main.dashboard') }}"><strong>Renta Sprinter</strong></a>
+    <nav>
+      <a href="{{ url_for('main.dashboard') }}">Inicio</a>
+      {% if current_user.rol in ['administrador', 'ventas', 'operaciones'] %}<a href="{{ url_for('clientes.index') }}">Clientes</a>{% endif %}
+      {% if current_user.rol in ['administrador', 'operaciones'] %}<a href="{{ url_for('unidades.index') }}">Unidades</a><a href="{{ url_for('choferes.index') }}">Choferes</a>{% endif %}
+      {% if current_user.rol in ['administrador', 'ventas', 'operaciones'] %}<a href="{{ url_for('reservas.index') }}">Reservas</a>{% endif %}
+      {% if current_user.rol in ['cliente', 'chofer'] %}<a href="{{ url_for('main.my_reservations') }}">Mis reservas</a>{% endif %}
+      {% if current_user.rol in ['administrador', 'ventas'] %}<a href="{{ url_for('pagos.index') }}">Pagos</a><a href="{{ url_for('reportes.financiero') }}">Reportes</a>{% endif %}
+      <span>{{ current_user.nombre }} · {{ current_user.rol }}</span>
+      <form class="inline" method="post" action="{{ url_for('auth.logout') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+        <button class="secondary" type="submit">Salir</button>
+      </form>
+    </nav>
+  </header>
+  {% endif %}
+  <main>
+    {% for category, message in get_flashed_messages(with_categories=true) %}
+      <div class="flash {{ category }}" role="status">{{ message }}</div>
+    {% endfor %}
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

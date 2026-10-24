@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}{{ 'Editar' if chofer else 'Nuevo' }} chofer · Renta Sprinter{% endblock %}
+{% block content %}
+<section class="panel">
+  <h1>{{ 'Editar chofer' if chofer else 'Registrar chofer' }}</h1>
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-grid">
+      <div><label for="nombre">Nombre</label><input id="nombre" name="nombre" required value="{{ chofer.nombre if chofer else '' }}"></div>
+      <div><label for="apellidos">Apellidos</label><input id="apellidos" name="apellidos" required value="{{ chofer.apellidos if chofer else '' }}"></div>
+      <div><label for="licencia">Licencia</label><input id="licencia" name="licencia" required value="{{ chofer.licencia if chofer else '' }}"></div>
+      <div><label for="telefono">Teléfono</label><input id="telefono" name="telefono" required value="{{ chofer.telefono if chofer else '' }}"></div>
+      <div><label for="tarifa_dia">Tarifa por día</label><input id="tarifa_dia" name="tarifa_dia" type="number" min="0.01" step="0.01" required value="{{ chofer.tarifa_dia if chofer else '' }}"></div>
+      <div><label for="disponibilidad">Disponibilidad</label><select id="disponibilidad" name="disponibilidad">{% for status in statuses %}<option value="{{ status }}" {{ 'selected' if chofer and chofer.disponibilidad == status or not chofer and status == 'disponible' }}>{{ status|title }}</option>{% endfor %}</select></div>
+    </div>
+    <p class="actions"><button type="submit">Guardar</button><a class="button secondary" href="{{ url_for('choferes.index') }}">Cancelar</a></p>
+  </form>
+</section>
+{% endblock %}

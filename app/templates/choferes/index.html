@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Choferes · Renta Sprinter{% endblock %}
+{% block content %}
+<div class="actions"><h1>Choferes</h1><a class="button" href="{{ url_for('choferes.create') }}">Nuevo chofer</a></div>
+<div class="table-wrap"><table>
+  <thead><tr><th>Nombre</th><th>Licencia</th><th>Teléfono</th><th>Disponibilidad</th><th>Tarifa/día</th><th></th></tr></thead>
+  <tbody>{% for chofer in choferes %}
+    <tr><td>{{ chofer.nombre }} {{ chofer.apellidos }}</td><td>{{ chofer.licencia }}</td><td>{{ chofer.telefono }}</td><td>{{ chofer.disponibilidad|title }}</td><td>${{ '%.2f'|format(chofer.tarifa_dia) }}</td><td><a class="button secondary" href="{{ url_for('choferes.edit', chofer_id=chofer.id) }}">Editar</a></td></tr>
+  {% else %}<tr><td colspan="6">No hay choferes registrados.</td></tr>{% endfor %}</tbody>
+</table></div>
+{% endblock %}

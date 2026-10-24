@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Reservas · Renta Sprinter{% endblock %}
+{% block content %}
+<div class="actions"><h1>Reservas</h1><a class="button" href="{{ url_for('reservas.create') }}">Nueva reserva</a></div>
+<div class="table-wrap"><table>
+  <thead><tr><th>Folio</th><th>Cliente</th><th>Unidad</th><th>Chofer</th><th>Salida</th><th>Regreso</th><th>Ruta</th><th>Estado</th><th>Total / saldo</th><th>Actualizar</th></tr></thead>
+  <tbody>{% for reserva in reservas %}
+    <tr>
+      <td>{{ reserva.folio }}</td><td>{{ reserva.cliente.nombre }}</td><td>{{ reserva.unidad.placas }}</td>
+      <td>{{ reserva.chofer.nombre }} {{ reserva.chofer.apellidos }}</td>
+      <td>{{ reserva.fecha_salida.strftime('%d/%m/%Y %H:%M') }}</td><td>{{ reserva.fecha_regreso.strftime('%d/%m/%Y %H:%M') }}</td>
+      <td>{{ reserva.origen }} → {{ reserva.destino }}</td><td>{{ reserva.estatus|replace('_', ' ')|title }}</td>
+      <td>${{ '%.2f'|format(reserva.precio_total) }}<br><span class="muted">Saldo ${{ '%.2f'|format(reserva.saldo_pendiente) }}</span></td>
+      <td>{% if reserva.estatus not in ['completada', 'cancelada'] %}
+        <form method="post" action="{{ url_for('reservas.change_status', reserva_id=reserva.id) }}">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <select name="estatus" aria-label="Nuevo estado">
+            {% if reserva.estatus == 'cotizacion' %}<option value="confirmada">Confirmar</option><option value="cancelada">Cancelar</option>
+            {% elif reserva.estatus == 'confirmada' %}<option value="en_curso">Iniciar</option><option value="cancelada">Cancelar</option>
+            {% elif reserva.estatus == 'en_curso' %}<option value="completada">Completar</option>{% endif %}
+          </select><button class="secondary" type="submit">Guardar</button>
+        </form>
+      {% else %}—{% endif %}</td>
+    </tr>
+  {% else %}<tr><td colspan="10">No hay reservas registradas.</td></tr>{% endfor %}</tbody>
+</table></div>
+{% endblock %}

@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block title %}Panel · Renta Sprinter{% endblock %}
+{% block content %}
+<h1>Panel de control</h1>
+<p class="muted">Resumen de la operación de renta.</p>
+<section class="cards">
+  {% if clientes_count is not none %}
+  <article class="card"><div>Clientes activos</div><div class="metric">{{ clientes_count }}</div></article>
+  {% endif %}
+  {% if unidades_count is not none %}
+  <article class="card"><div>Unidades</div><div class="metric">{{ unidades_count }}</div></article>
+  {% endif %}
+  {% if choferes_count is not none %}
+  <article class="card"><div>Choferes</div><div class="metric">{{ choferes_count }}</div></article>
+  {% endif %}
+  <article class="card"><div>Reservas</div><div class="metric">{{ reservas_count }}</div></article>
+  <article class="card"><div>Reservas pendientes</div><div class="metric">{{ pendientes_count }}</div></article>
+  {% if pagos_pendientes is not none %}
+  <article class="card"><div>Pagos pendientes</div><div class="metric">{{ pagos_pendientes }}</div></article>
+  {% endif %}
+</section>
+{% if current_user.rol in ['cliente', 'chofer'] %}
+<section class="panel">
+  <h2>Tus reservas recientes</h2>
+  {% if recent_reservations %}
+  <div class="table-wrap"><table>
+    <thead><tr><th>Folio</th><th>Unidad</th><th>Salida</th><th>Regreso</th><th>Estado</th><th>Total</th></tr></thead>
+    <tbody>{% for reserva in recent_reservations %}
+      <tr><td>{{ reserva.folio }}</td><td>{{ reserva.unidad.placas }}</td><td>{{ reserva.fecha_salida.strftime('%d/%m/%Y %H:%M') }}</td><td>{{ reserva.fecha_regreso.strftime('%d/%m/%Y %H:%M') }}</td><td>{{ reserva.estatus|replace('_', ' ')|title }}</td><td>${{ '%.2f'|format(reserva.precio_total) }}</td></tr>
+    {% endfor %}</tbody>
+  </table></div>
+  <a href="{{ url_for('main.my_reservations') }}">Ver todas</a>
+  {% else %}<p class="muted">No tienes reservas registradas.</p>{% endif %}
+</section>
+{% else %}
+<section class="panel">
+  <h2>Reservas recientes</h2>
+  {% if recent_reservations %}
+  <div class="table-wrap"><table>
+    <thead><tr><th>Folio</th><th>Cliente</th><th>Unidad</th><th>Salida</th><th>Regreso</th><th>Estado</th><th>Total</th></tr></thead>
+    <tbody>{% for reserva in recent_reservations %}
+      <tr><td>{{ reserva.folio }}</td><td>{{ reserva.cliente.nombre }}</td><td>{{ reserva.unidad.placas }}</td><td>{{ reserva.fecha_salida.strftime('%d/%m/%Y %H:%M') }}</td><td>{{ reserva.fecha_regreso.strftime('%d/%m/%Y %H:%M') }}</td><td>{{ reserva.estatus|replace('_', ' ')|title }}</td><td>${{ '%.2f'|format(reserva.precio_total) }}</td></tr>
+    {% endfor %}</tbody>
+  </table></div>
+  {% else %}<p class="muted">Todavía no hay reservas registradas.</p>{% endif %}
+</section>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,11 @@
+{% extends "base.html" %}
+{% block title %}Unidades · Renta Sprinter{% endblock %}
+{% block content %}
+<div class="actions"><h1>Unidades Sprinter</h1><a class="button" href="{{ url_for('unidades.create') }}">Registrar unidad</a></div>
+<div class="table-wrap"><table>
+  <thead><tr><th>Código</th><th>Vehículo</th><th>Año</th><th>Placas</th><th>Capacidad</th><th>Precio/día</th><th>Estado</th><th></th></tr></thead>
+  <tbody>{% for unidad in unidades %}
+    <tr><td>{{ unidad.codigo }}</td><td>{{ unidad.marca }} {{ unidad.modelo }}</td><td>{{ unidad.anio }}</td><td>{{ unidad.placas }}</td><td>{{ unidad.capacidad_pasajeros }}</td><td>${{ '%.2f'|format(unidad.precio_dia) }}</td><td>{{ unidad.estatus|replace('_', ' ')|title }}</td><td><a class="button secondary" href="{{ url_for('unidades.edit', unidad_id=unidad.id) }}">Editar</a></td></tr>
+  {% else %}<tr><td colspan="8">No hay unidades registradas.</td></tr>{% endfor %}</tbody>
+</table></div>
+{% endblock %}

@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Reporte financiero · Renta Sprinter{% endblock %}
+{% block content %}
+<div class="actions"><h1>Reporte de ingresos</h1><a class="button" href="{{ url_for('reportes.export_excel') }}">Descargar Excel</a></div>
+<section class="card"><div>Ingresos cobrados</div><div class="metric">${{ '%.2f'|format(ingresos_total) }}</div></section>
+<div class="table-wrap"><table>
+  <thead><tr><th>Mes</th><th>Ingresos cobrados</th><th>Pagos</th></tr></thead>
+  <tbody>{% for mes, ingresos, cantidad in mensual %}
+    <tr><td>{{ mes }}</td><td>${{ '%.2f'|format(ingresos) }}</td><td>{{ cantidad }}</td></tr>
+  {% else %}<tr><td colspan="3">Aún no hay pagos marcados como pagados.</td></tr>{% endfor %}</tbody>
+</table></div>
+{% endblock %}

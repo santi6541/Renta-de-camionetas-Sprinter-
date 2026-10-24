@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Registrar pago · Renta Sprinter{% endblock %}
+{% block content %}
+<section class="panel">
+  <h1>Registrar pago</h1>
+  {% if not reservas %}<p class="flash warning">No hay reservas activas para asociar un pago.</p>{% endif %}
+  <form method="post">
+    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+    <div class="form-grid">
+      <div><label for="reserva_id">Reserva</label><select id="reserva_id" name="reserva_id" required><option value="">Selecciona</option>{% for reserva in reservas %}<option value="{{ reserva.id }}">{{ reserva.folio }} · {{ reserva.cliente.nombre }} · saldo ${{ '%.2f'|format(reserva.saldo_pendiente) }}</option>{% endfor %}</select></div>
+      <div><label for="monto">Monto</label><input id="monto" name="monto" type="number" min="0.01" step="0.01" required></div>
+      <div><label for="metodo_pago">Método</label><select id="metodo_pago" name="metodo_pago" required>{% for method in methods %}<option value="{{ method }}">{{ method|replace('_', ' ')|title }}</option>{% endfor %}</select></div>
+      <div><label for="estatus">Estado</label><select id="estatus" name="estatus">{% for status in statuses %}<option value="{{ status }}">{{ status|title }}</option>{% endfor %}</select></div>
+      <div><label for="referencia">Referencia (opcional)</label><input id="referencia" name="referencia" maxlength="100"></div>
+    </div>
+    <p class="actions"><button type="submit" {{ 'disabled' if not reservas }}>Guardar pago</button><a class="button secondary" href="{{ url_for('pagos.index') }}">Cancelar</a></p>
+  </form>
+</section>
+{% endblock %}

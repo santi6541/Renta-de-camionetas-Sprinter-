@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Clientes · Renta Sprinter{% endblock %}
+{% block content %}
+<div class="actions"><h1>Clientes</h1><a class="button" href="{{ url_for('clientes.create') }}">Nuevo cliente</a></div>
+<div class="table-wrap"><table>
+  <thead><tr><th>Nombre</th><th>Teléfono</th><th>Correo</th><th>RFC</th><th>Tipo</th><th>Estado</th><th>Acciones</th></tr></thead>
+  <tbody>{% for cliente in clientes %}
+    <tr><td>{{ cliente.nombre }}</td><td>{{ cliente.telefono }}</td><td>{{ cliente.email }}</td><td>{{ cliente.rfc or '—' }}</td><td>{{ cliente.tipo_cliente|title }}</td><td>{{ 'Activo' if cliente.activo else 'Inactivo' }}</td>
+      <td class="actions"><a class="button secondary" href="{{ url_for('clientes.edit', cliente_id=cliente.id) }}">Editar</a>
+        <form method="post" action="{{ url_for('clientes.toggle_status', cliente_id=cliente.id) }}"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}"><button class="secondary" type="submit">{{ 'Desactivar' if cliente.activo else 'Activar' }}</button></form>
+      </td></tr>
+  {% else %}<tr><td colspan="7">No hay clientes registrados.</td></tr>{% endfor %}</tbody>
+</table></div>
+{% endblock %}
